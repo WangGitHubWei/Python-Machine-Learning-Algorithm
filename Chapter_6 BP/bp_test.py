@@ -16,7 +16,7 @@ def load_data(file_name):
     for line in f.readlines():
         feature_tmp = []
         lines = line.strip().split("\t")
-        for i in xrange(len(lines)):
+        for i in range(len(lines)):
             feature_tmp.append(float(lines[i]))        
         feature_data.append(feature_tmp)
     f.close()  # 关闭文件
@@ -29,15 +29,15 @@ def generate_data():
     data = np.mat(np.zeros((20000, 2)))
     m = np.shape(data)[0]
     x = np.mat(np.random.rand(20000, 2))
-    for i in xrange(m):
+    for i in range(m):
         data[i, 0] = x[i, 0] * 9 - 4.5
         data[i, 1] = x[i, 1] * 9 - 4.5
     # 2、将数据点保存到文件“test_data”中
     f = open("test_data", "w")
     m,n = np.shape(data)
-    for i in xrange(m):
+    for i in range(m):
         tmp =[]
-        for j in xrange(n):
+        for j in range(n):
             tmp.append(str(data[i,j]))
         f.write("\t".join(tmp) + "\n")
     f.close()       
@@ -78,7 +78,7 @@ def save_predict(file_name, pre):
     f = open(file_name, "w")
     m = np.shape(pre)[0]
     result = []
-    for i in xrange(m):
+    for i in range(m):
         result.append(str(pre[i, 0]))
     f.write("\n".join(result))
     f.close()

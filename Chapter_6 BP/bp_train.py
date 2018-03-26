@@ -5,6 +5,8 @@ Date:20160831
 '''
 import numpy as np
 from math import sqrt
+import pandas as pd 
+import matplotlib.pyplot as plt
 
 def load_data(file_name):
     '''导入数据
@@ -19,8 +21,8 @@ def load_data(file_name):
     label_tmp = []
     for line in f.readlines():
         feature_tmp = []
-        lines = line.strip().split("\t")
-        for i in xrange(len(lines) - 1):
+        lines = line.strip().split("\t")  #Python strip() 方法用于移除字符串头尾指定的字符（默认为空格）。
+        for i in range(len(lines) - 1):
             feature_tmp.append(float(lines[i]))
         label_tmp.append(int(lines[-1]))      
         feature_data.append(feature_tmp)
@@ -30,9 +32,9 @@ def load_data(file_name):
     m = len(label_tmp)
     n_class = len(set(label_tmp))  # 得到类别的个数
     
-    label_data = np.mat(np.zeros((m, n_class)))
-    for i in xrange(m):
-        label_data[i, label_tmp[i]] = 1
+    label_data = np.mat(np.zeros((m, n_class))) #行是数据总数，列是标签种类数
+    for i in range(m):
+        label_data[i, label_tmp[i]] = 1   # 属于哪一类，就在那个类上把值赋为1
     
     return np.mat(feature_data), label_data, n_class
 
@@ -48,10 +50,10 @@ def partial_sig(x):
     input:  x(mat/float):自变量，可以是矩阵或者是任意实数
     output: out(mat/float):Sigmoid导函数的值
     '''
-    m, n = np.shape(x)
+    m, n = np.shape(x)  #m为行数，n为列数
     out = np.mat(np.zeros((m, n)))
-    for i in xrange(m):
-        for j in xrange(n):
+    for i in range(m):
+        for j in range(n):
             out[i, j] = sig(x[i, j]) * (1 - sig(x[i, j]))
     return out
 
@@ -64,7 +66,11 @@ def hidden_in(feature, w0, b0):
     '''
     m = np.shape(feature)[0]
     hidden_in = feature * w0
-    for i in xrange(m):
+    
+    for i in range(m):
+        #print(w0)
+        #print(hidden_in)
+        #print(hidden_in[i, ])
         hidden_in[i, ] += b0
     return hidden_in
 
@@ -85,7 +91,7 @@ def predict_in(hidden_out, w1, b1):
     '''
     m = np.shape(hidden_out)[0]
     predict_in = hidden_out * w1
-    for i in xrange(m):
+    for i in range(m):
         predict_in[i, ] += b1
     return predict_in
     
@@ -167,8 +173,8 @@ def get_cost(cost):
     m,n = np.shape(cost)
     
     cost_sum = 0.0
-    for i in xrange(m):
-        for j in xrange(n):
+    for i in range(m):
+        for j in range(n):
             cost_sum += cost[i,j] * cost[i,j]
     return cost_sum / m
 
@@ -194,9 +200,9 @@ def save_model(w0, w1, b0, b1):
     def write_file(file_name, source):   
         f = open(file_name, "w")
         m, n = np.shape(source)
-        for i in xrange(m):
+        for i in range(m):
             tmp = []
-            for j in xrange(n):
+            for j in range(n):
                 tmp.append(str(source[i, j]))
             f.write("\t".join(tmp) + "\n")
         f.close()
@@ -212,9 +218,9 @@ def err_rate(label, pre):
             pre(mat):训练样本的预测值
     output: rate[0,0](float):错误率
     '''
-    m = np.shape(label)[0]
+    m = np.shape(label)[0] #行数
     err = 0.0
-    for i in xrange(m):
+    for i in range(m):
         if label[i, 0] != pre[i, 0]:
             err += 1
     rate = err / m
@@ -224,6 +230,7 @@ if __name__ == "__main__":
     # 1、导入数据
     print ("--------- 1.load data ------------")
     feature, label, n_class = load_data("data.txt")
+    
     # 2、训练网络模型
     print ("--------- 2.training ------------")
     w0, w1, b0, b1 = bp_train(feature, label, 20, 1000, 0.1, n_class)
@@ -234,4 +241,26 @@ if __name__ == "__main__":
     print ("--------- 4.get prediction ------------")
     result = get_predict(feature, w0, w1, b0, b1)
     print ("训练准确性为：", (1 - err_rate(np.argmax(label, axis=1), np.argmax(result, axis=1))))
+    #np.argmax(label, axis=1)  返回的是同一行中最大值的列数。
     
+    
+    
+    
+'''
+ --------- 1.load data ------------
+--------- 2.training ------------
+    -------- iter:  0  ,cost:  0.383725119032
+    -------- iter:  100  ,cost:  0.0281588166387
+    -------- iter:  200  ,cost:  0.0279331547562
+    -------- iter:  300  ,cost:  0.0249447828392
+    -------- iter:  400  ,cost:  0.012409386771
+    -------- iter:  500  ,cost:  0.0117987327196
+    -------- iter:  600  ,cost:  0.0115194123029
+    -------- iter:  700  ,cost:  0.0110088095243
+    -------- iter:  800  ,cost:  0.0105985235697
+    -------- iter:  900  ,cost:  0.00829191991913
+    -------- iter:  1000  ,cost:  0.00846503398547
+--------- 3.save model ------------
+--------- 4.get prediction ------------
+训练准确性为： 0.9925
+'''  
