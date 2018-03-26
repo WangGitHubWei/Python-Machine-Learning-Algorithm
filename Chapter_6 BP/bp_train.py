@@ -154,8 +154,8 @@ def bp_train(feature, label, n_hidden, maxCycle, alpha, n_output):
         w0 = w0 - alpha * (feature.T * delta_hidden)
         b0 = b0 - alpha * np.sum(delta_hidden, axis=0) * (1.0 / m)
         if i % 100 == 0:
-            print "\t-------- iter: ", i, \
-            " ,cost: ",  (1.0/2) * get_cost(get_predict(feature, w0, w1, b0, b1) - label)                
+            print ("\t-------- iter: ", i, \
+            " ,cost: ",  (1.0/2) * get_cost(get_predict(feature, w0, w1, b0, b1) - label))                
         i += 1           
     return w0, w1, b0, b1
 
@@ -222,16 +222,16 @@ def err_rate(label, pre):
 
 if __name__ == "__main__":
     # 1、导入数据
-    print "--------- 1.load data ------------"
+    print ("--------- 1.load data ------------")
     feature, label, n_class = load_data("data.txt")
     # 2、训练网络模型
-    print "--------- 2.training ------------"
+    print ("--------- 2.training ------------")
     w0, w1, b0, b1 = bp_train(feature, label, 20, 1000, 0.1, n_class)
     # 3、保存最终的模型
-    print "--------- 3.save model ------------"
+    print ("--------- 3.save model ------------")
     save_model(w0, w1, b0, b1)
     # 4、得到最终的预测结果
-    print "--------- 4.get prediction ------------"
+    print ("--------- 4.get prediction ------------")
     result = get_predict(feature, w0, w1, b0, b1)
-    print "训练准确性为：", (1 - err_rate(np.argmax(label, axis=1), np.argmax(result, axis=1)))
+    print ("训练准确性为：", (1 - err_rate(np.argmax(label, axis=1), np.argmax(result, axis=1))))
     
