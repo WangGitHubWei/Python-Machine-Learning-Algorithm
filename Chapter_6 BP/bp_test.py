@@ -86,15 +86,15 @@ def save_predict(file_name, pre):
 if __name__ == "__main__":
     generate_data()
     # 1、导入测试数据
-    print "--------- 1.load data ------------"
+    print ("--------- 1.load data ------------")
     dataTest = load_data("test_data")
     # 2、导入BP神经网络模型
-    print "--------- 2.load model ------------"
+    print ("--------- 2.load model ------------")
     w0, w1, b0, b1 = load_model("weight_w0", "weight_w1", "weight_b0", "weight_b1")
     # 3、得到最终的预测值
     print "--------- 3.get prediction ------------"
     result = get_predict(dataTest, w0, w1, b0, b1)
     # 4、保存最终的预测结果
-    print "--------- 4.save result ------------"
+    print ("--------- 4.save result ------------")
     pre = np.argmax(result, axis=1)
     save_predict("result", pre)
