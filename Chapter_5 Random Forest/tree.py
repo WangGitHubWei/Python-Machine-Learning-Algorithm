@@ -36,12 +36,12 @@ def label_uniq_cnt(data):
     input:  data(list):原始数据集
     output: label_uniq_cnt(int):样本中的标签的个数
     '''
-    label_uniq_cnt = {}
+    label_uniq_cnt = {} 
     
     for x in data:
-        label = x[len(x) - 1]  # 取得每一个样本的类标签label
+        label = x[len(x) - 1]  # 取得每一个样本的类标签label 
         if label not in label_uniq_cnt:
-            label_uniq_cnt[label] = 0
+            label_uniq_cnt[label] = 0  #添加一个新key,初始化值是0
         label_uniq_cnt[label] = label_uniq_cnt[label] + 1
     return label_uniq_cnt
 
@@ -79,16 +79,16 @@ def build_tree(data):
     bestCriteria = None  # 存储最佳切分属性以及最佳切分点
     bestSets = None  # 存储切分后的两个数据集
     
-    feature_num = len(data[0]) - 1  # 样本中特征的个数
+    feature_num = len(data[0]) - 1  # 样本中特征的个数   (减去了标签列)
     # 2、找到最好的划分
     for fea in range(0, feature_num):
-        # 2.1、取得fea特征处所有可能的取值
+        # 2.1、取得fea特征处所有可能的取值 
         feature_values = {}  # 在fea位置处可能的取值
         for sample in data:  # 对每一个样本
             feature_values[sample[fea]] = 1  # 存储特征fea处所有可能的取值
         
         # 2.2、针对每一个可能的取值，尝试将数据集划分，并计算Gini指数
-        for value in feature_values.keys():  # 遍历该属性的所有切分点
+        for value in feature_values.keys():  # 遍历该属性的所有切分点    比如颜色：红绿蓝 三个切分点
             # 2.2.1、 根据fea特征中的值value将数据集划分成左右子树
             (set_1, set_2) = split_tree(data, fea, value)
             # 2.2.2、计算当前的Gini指数

@@ -68,9 +68,8 @@ def hidden_in(feature, w0, b0):
     hidden_in = feature * w0
     
     for i in range(m):
-        #print(w0)
-        #print(hidden_in)
-        #print(hidden_in[i, ])
+        #print(hidden_in[i, ],1)
+        #print(hidden_in[i,:],2)
         hidden_in[i, ] += b0
     return hidden_in
 

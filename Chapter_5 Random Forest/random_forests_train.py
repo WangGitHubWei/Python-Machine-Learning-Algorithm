@@ -8,7 +8,7 @@ import numpy as np
 import random as rd
 from math import log 
 from tree import build_tree, predict
-import cPickle as pickle
+import pickle as pickle
 
 def load_data(file_name):
     '''导入数据
@@ -21,7 +21,7 @@ def load_data(file_name):
         lines = line.strip().split("\t")
         data_tmp = []
         for x in lines:
-            data_tmp.append(float(x))
+            data_tmp.append(float(x))  #因为行内做了拆分，所以先把一行的数据放到data_tmp中
         data_train.append(data_tmp)
     f.close()
     return data_train
@@ -36,15 +36,15 @@ def choose_samples(data, k):
     m, n = np.shape(data)  # 样本的个数和样本特征的个数
     # 1、选择出k个特征的index
     feature = []
-    for j in xrange(k):
-        feature.append(rd.randint(0, n - 2))  # n-1列是标签
+    for j in range(k):
+        feature.append(rd.randint(0, n - 2))  # n-1列是标签    生成在半开半闭区间[low,high)上离散均匀分布的整数值;若high=None，则取值区间变为[0,low) 
     # 2、选择出m个样本的index
     index = []
-    for i in xrange(m):
+    for i in range(m):
         index.append(rd.randint(0, m - 1))
     # 3、从data中选择出m个样本的k个特征，组成数据集data_samples
     data_samples = []
-    for i in xrange(m):
+    for i in range(m):
         data_tmp = []
         for fea in feature:
             data_tmp.append(data[index[i]][fea])
@@ -68,7 +68,7 @@ def random_forest_training(data_train, trees_num):
     else:
         k = 1
     # 开始构建每一棵树
-    for i in xrange(trees_num):
+    for i in range(trees_num):
         # 1、随机选择m个样本, k个特征
         data_samples, feature = choose_samples(data_train, k)
         # 2、构建每一棵分类树
@@ -89,7 +89,7 @@ def split_data(data_train, feature):
     m = np.shape(data_train)[0]
     data = []
     
-    for i in xrange(m):
+    for i in range(m):
         data_x_tmp = []
         for x in feature:
             data_x_tmp.append(data_train[i][x])
@@ -103,13 +103,13 @@ def get_predict(trees_result, trees_fiture, data_train):
     m = np.shape(data_train)[0]
     
     result = []
-    for i in xrange(m_tree):
+    for i in range(m_tree):
         clf = trees_result[i]
         feature = trees_fiture[i]
         data = split_data(data_train, feature)
         result_i = []
-        for i in xrange(m):
-            result_i.append((predict(data[i][0:-1], clf).keys())[0])
+        for i in range(m):
+            result_i.append(list((predict(data[i][0:-1], clf).keys()))[0])  # 这是由于python3改变了dict.keys,返回的是dict_keys对象,支持iterable 但不支持indexable，我们可以将其明确的转化成list
         result.append(result_i)
     final_predict = np.sum(result, axis=0)
     return final_predict
@@ -117,7 +117,7 @@ def get_predict(trees_result, trees_fiture, data_train):
 def cal_correct_rate(data_train, final_predict):
     m = len(final_predict)
     corr = 0.0
-    for i in xrange(m):
+    for i in range(m):
         if data_train[i][-1] * final_predict[i] > 0:
             corr += 1
     return corr / m
@@ -126,7 +126,7 @@ def save_model(trees_result, trees_feature, result_file, feature_file):
     # 1、保存选择的特征
     m = len(trees_feature)
     f_fea = open(feature_file, "w")
-    for i in xrange(m):
+    for i in range(m):
         fea_tmp = []
         for x in trees_feature[i]:
             fea_tmp.append(str(x))
@@ -134,22 +134,22 @@ def save_model(trees_result, trees_feature, result_file, feature_file):
     f_fea.close()
     
     # 2、保存最终的随机森林模型
-    with open(result_file, 'w') as f:
+    with open(result_file, 'wb') as f:
         pickle.dump(trees_result, f)
         
 
 if __name__ == "__main__":
     # 1、导入数据
-    print "----------- 1、load data -----------"
+    print ("----------- 1、load data -----------")
     data_train = load_data("data.txt")
     # 2、训练random_forest模型
-    print "----------- 2、random forest training ------------"
+    print ("----------- 2、random forest training ------------")
     trees_result, trees_feature = random_forest_training(data_train, 50)
     # 3、得到训练的准确性
-    print "------------ 3、get prediction correct rate ------------"
+    print ("------------ 3、get prediction correct rate ------------")
     result = get_predict(trees_result, trees_feature, data_train)
     corr_rate = cal_correct_rate(data_train, result)
-    print "\t------correct rate: ", corr_rate
+    print ("\t------correct rate: ", corr_rate)
     # 4、保存最终的随机森林模型
-    print "------------ 4、save model -------------"
+    print ("------------ 4、save model -------------")
     save_model(trees_result, trees_feature, "result_file", "feature_file")

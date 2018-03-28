@@ -235,7 +235,7 @@ def svm_predict(svm, test_sample_x):
     kernel_value = cal_kernel_value(svm.train_x, test_sample_x, svm.kernel_opt)
     # 2、计算预测值
     predict = kernel_value.T * np.multiply(svm.train_y, svm.alphas) + svm.b
-    return predict
+    return predict 
 
 def cal_accuracy(svm, test_x, test_y):
     '''计算预测的准确性
