@@ -19,11 +19,11 @@ def loadDataSet(data):
         lines = line.strip().split("\t")
         lineArr = []
         
-        for i in xrange(len(lines) - 1):
+        for i in range(len(lines) - 1):
             lineArr.append(float(lines[i]))
         dataMat.append(lineArr)
         
-        labelMat.append(float(lines[-1]) * 2 - 1)  # 转换成{-1,1}
+        labelMat.append(float(lines[-1]) * 2 - 1)   # 转换成{-1,1}
     fr.close()
     return dataMat, labelMat
 
@@ -38,8 +38,8 @@ def initialize_v(n, k):
     '''
     v = np.mat(np.zeros((n, k)))
     
-    for i in xrange(n):
-        for j in xrange(k):
+    for i in range(n):
+        for j in range(k):
             # 利用正态分布生成每一个权重
             v[i, j] = normalvariate(0, 0.2)
     return v
@@ -60,9 +60,9 @@ def stocGradAscent(dataMatrix, classLabels, k, max_iter, alpha):
     v = initialize_v(n, k)  # 初始化V
     
     # 2、训练
-    for it in xrange(max_iter):
-        for x in xrange(m):  # 随机优化，对每一个样本而言的
-            inter_1 = dataMatrix[x] * v
+    for it in range(max_iter):
+        for x in range(m):  # 随机优化，对每一个样本而言的
+            inter_1 = dataMatrix[x] * v  #shape(1,k)
             inter_2 = np.multiply(dataMatrix[x], dataMatrix[x]) * \
              np.multiply(v, v)  # multiply对应元素相乘
             # 完成交叉项
@@ -71,19 +71,19 @@ def stocGradAscent(dataMatrix, classLabels, k, max_iter, alpha):
             loss = sigmoid(classLabels[x] * p[0, 0]) - 1
         
             w0 = w0 - alpha * loss * classLabels[x]
-            for i in xrange(n):
+            for i in range(n):
                 if dataMatrix[x, i] != 0:
                     w[i, 0] = w[i, 0] - alpha * loss * classLabels[x] * dataMatrix[x, i]
                     
-                    for j in xrange(k):
+                    for j in range(k):
                         v[i, j] = v[i, j] - alpha * loss * classLabels[x] * \
                         (dataMatrix[x, i] * inter_1[0, j] -\
                           v[i, j] * dataMatrix[x, i] * dataMatrix[x, i])
         
         # 计算损失函数的值
         if it % 1000 == 0:
-            print "\t------- iter: ", it, " , cost: ", \
-            getCost(getPrediction(np.mat(dataTrain), w0, w, v), classLabels)
+            print ("\t------- iter: ", it, " , cost: ", \
+            getCost(getPrediction(np.mat(dataTrain), w0, w, v), classLabels))
     
     # 3、返回最终的FM模型的参数
     return w0, w, v
@@ -96,7 +96,7 @@ def getCost(predict, classLabels):
     '''
     m = len(predict)
     error = 0.0
-    for i in xrange(m):
+    for i in range(m):
         error -=  np.log(sigmoid(predict[i] * classLabels[i] ))  
     return error
 
@@ -110,7 +110,7 @@ def getPrediction(dataMatrix, w0, w, v):
     '''
     m = np.shape(dataMatrix)[0]   
     result = []
-    for x in xrange(m):
+    for x in range(m):
         
         inter_1 = dataMatrix[x] * v
         inter_2 = np.multiply(dataMatrix[x], dataMatrix[x]) * \
@@ -131,7 +131,7 @@ def getAccuracy(predict, classLabels):
     m = len(predict)
     allItem = 0
     error = 0
-    for i in xrange(m):
+    for i in range(m):
         allItem += 1
         if float(predict[i]) < 0.5 and classLabels[i] == 1.0:
             error += 1
@@ -154,14 +154,14 @@ def save_model(file_name, w0, w, v):
     # 2、保存一次项的权重
     w_array = []
     m = np.shape(w)[0]
-    for i in xrange(m):
+    for i in range(m):
         w_array.append(str(w[i, 0]))
     f.write("\t".join(w_array) + "\n")
     # 3、保存交叉项的权重
     m1 , n1 = np.shape(v)
-    for i in xrange(m1):
+    for i in range(m1):
         v_tmp = []
-        for j in xrange(n1):
+        for j in range(n1):
             v_tmp.append(str(v[i, j]))
         f.write("\t".join(v_tmp) + "\n")
     f.close()
@@ -169,13 +169,13 @@ def save_model(file_name, w0, w, v):
    
 if __name__ == "__main__":
     # 1、导入训练数据
-    print "---------- 1.load data ---------"
+    print ("---------- 1.load data ---------")
     dataTrain, labelTrain = loadDataSet("data_1.txt")
-    print "---------- 2.learning ---------"
+    print ("---------- 2.learning ---------")
     # 2、利用随机梯度训练FM模型
     w0, w, v = stocGradAscent(np.mat(dataTrain), labelTrain, 3, 10000, 0.01)
     predict_result = getPrediction(np.mat(dataTrain), w0, w, v)  # 得到训练的准确性
-    print "----------training accuracy: %f" % (1 - getAccuracy(predict_result, labelTrain))
-    print "---------- 3.save result ---------"
+    print ("----------training accuracy: %f" % (1 - getAccuracy(predict_result, labelTrain)))
+    print ("---------- 3.save result ---------")
     # 3、保存训练好的FM模型
     save_model("weights", w0, w, v)

@@ -250,7 +250,7 @@ def cal_accuracy(svm, test_x, test_y):
         # 对每一个样本得到预测值
         predict=svm_predict(svm, test_x[i, :])
         # 判断每一个样本的预测值与真实值是否一致
-        if np.sign(predict) == np.sign(test_y[i]):
+        if np.sign(predict) == np.sign(test_y[i]): #The sign function returns -1 if x < 0, 0 if x==0, 1 if x > 0.
             correct += 1
     accuracy = correct / n_samples
     return accuracy
@@ -260,6 +260,6 @@ def save_svm_model(svm_model, model_file):
     input:  svm_model:SVM模型
             model_file(string):SVM模型需要保存到的文件
     '''
-    with open(model_file, 'w') as f:
+    with open(model_file, 'wb') as f:
         pickle.dump(svm_model, f)
         

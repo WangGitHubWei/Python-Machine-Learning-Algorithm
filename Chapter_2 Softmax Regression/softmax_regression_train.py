@@ -19,7 +19,7 @@ def load_data(inputfile):
         feature_tmp = []
         feature_tmp.append(1)  # 偏置项
         lines = line.strip().split("\t")
-        for i in xrange(len(lines) - 1):
+        for i in range(len(lines) - 1):
             feature_tmp.append(float(lines[i]))
         label_data.append(int(lines[-1]))
         
@@ -35,7 +35,7 @@ def cost(err, label_data):
     '''
     m = np.shape(err)[0]
     sum_cost = 0.0
-    for i in xrange(m):
+    for i in range(m):
         if err[i, label_data[i, 0]] / np.sum(err[i, :]) > 0:
             sum_cost -= np.log(err[i, label_data[i, 0]] / np.sum(err[i, :]))
         else:
@@ -56,14 +56,17 @@ def gradientAscent(feature_data, label_data, k, maxCycle, alpha):
     weights = np.mat(np.ones((n, k)))  # 权重的初始化
     i = 0
     while i <= maxCycle:
-        err = np.exp(feature_data * weights)
+        err = np.exp(feature_data * weights)  #得到一个shape(m,k)的mat
+        
         if i % 500 == 0:
-            print "\t-----iter: ", i , ", cost: ", cost(err, label_data)
-        rowsum = -err.sum(axis=1)
+            print ("\t-----iter: ", i , ", cost: ", cost(err, label_data))
+        rowsum = -err.sum(axis=1) #而当加入axis=1以后就是将一个矩阵的每一行向量相加
         rowsum = rowsum.repeat(k, axis=1)
+        #   axis=0,沿着y轴复制，实际上增加了行数,axis=1,沿着x轴复制，实际上增加列数
+
         err = err / rowsum
         for x in range(m):
-            err[x, label_data[x, 0]] += 1
+            err[x, label_data[x, 0]] += 1   #得到的是标签的类型
         weights = weights + (alpha / m) * feature_data.T * err      
         i += 1           
     return weights
@@ -75,9 +78,9 @@ def save_model(file_name, weights):
     '''
     f_w = open(file_name, "w")
     m, n = np.shape(weights)
-    for i in xrange(m):
+    for i in range(m):
         w_tmp = []
-        for j in xrange(n):
+        for j in range(n):
             w_tmp.append(str(weights[i, j]))
         f_w.write("\t".join(w_tmp) + "\n")
     f_w.close()
@@ -85,11 +88,11 @@ def save_model(file_name, weights):
 if __name__ == "__main__":
     inputfile = "SoftInput.txt"
     # 1、导入训练数据
-    print "---------- 1.load data ------------"
+    print ("---------- 1.load data ------------")
     feature, label, k = load_data(inputfile)
     # 2、训练Softmax模型
-    print "---------- 2.training ------------"
+    print ("---------- 2.training ------------")
     weights = gradientAscent(feature, label, k, 10000, 0.4)
     # 3、保存最终的模型
-    print "---------- 3.save model ------------"
+    print ("---------- 3.save model ------------")
     save_model("weights", weights)
