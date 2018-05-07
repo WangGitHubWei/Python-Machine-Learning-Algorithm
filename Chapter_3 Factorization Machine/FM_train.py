@@ -73,7 +73,7 @@ def stocGradAscent(dataMatrix, classLabels, k, max_iter, alpha):
             w0 = w0 - alpha * loss * classLabels[x]
             for i in range(n):
                 if dataMatrix[x, i] != 0:
-                    w[i, 0] = w[i, 0] - alpha * loss * classLabels[x] * dataMatrix[x, i]
+                    w[i, 0] = w[i, 0] - alpha * loss * classLabels[x] * dataMatrix[x, i] 
                     
                     for j in range(k):
                         v[i, j] = v[i, j] - alpha * loss * classLabels[x] * \

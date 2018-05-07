@@ -199,7 +199,7 @@ def SVM_training(train_x, train_y, C, toler, max_iter, kernel_option = ('rbf', 0
     iteration = 0
     
     while (iteration < max_iter) and ((alpha_pairs_changed > 0) or entireSet):
-        print "\t iterration: ", iteration
+        print ("\t iterration: ", iteration)
         alpha_pairs_changed = 0
 
         if entireSet:

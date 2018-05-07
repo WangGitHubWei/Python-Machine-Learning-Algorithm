@@ -4,7 +4,7 @@ Date:20161030
 @author: zhaozhiyong
 '''
 
-import cPickle as pickle
+import pickle as pickle
 from random_forests_train import get_predict
 
 def load_data(file_name):
@@ -68,16 +68,16 @@ def save_result(data_test, prediction, result_file):
 
 if __name__ == "__main__":
     # 1、导入测试数据集
-    print "--------- 1、load test data --------"
+    print ("--------- 1、load test data --------")
     data_test = load_data("test_data.txt")
     # 2、导入随机森林模型
-    print "--------- 2、load random forest model ----------"
+    print ("--------- 2、load random forest model ----------")
     trees_result, trees_feature = load_model("result_file", "feature_file")
     # 3、预测
-    print "--------- 3、get prediction -----------"
+    print ("--------- 3、get prediction -----------")
     prediction = get_predict(trees_result, trees_feature, data_test)
     # 4、保存最终的预测结果
-    print "--------- 4、save result -----------"
+    print ("--------- 4、save result -----------")
     save_result(data_test, prediction, "final_result")
     
     
