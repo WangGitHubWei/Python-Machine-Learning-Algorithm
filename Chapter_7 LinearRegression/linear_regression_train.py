@@ -16,7 +16,7 @@ def load_data(file_path):
         feature_tmp = []
         lines = line.strip().split("\t")
         feature_tmp.append(1)  # x0
-        for i in xrange(len(lines) - 1):
+        for i in range(len(lines) - 1):
             feature_tmp.append(float(lines[i]))
         feature.append(feature_tmp)
         label.append(float(lines[-1]))
@@ -29,7 +29,7 @@ def least_square(feature, label):
             label(mat):标签
     output: w(mat):回归系数
     '''
-    w = (feature.T * feature).I * feature.T * label
+    w = (feature.T * feature).I * feature.T * label #.I 表示逆矩阵
     return w
 
 def first_derivativ(feature, label, w):
@@ -40,9 +40,9 @@ def first_derivativ(feature, label, w):
     '''
     m, n = np.shape(feature)
     g = np.mat(np.zeros((n, 1)))
-    for i in xrange(m):
+    for i in range(m):
         err = label[i, 0] - feature[i, ] * w
-        for j in xrange(n):
+        for j in range(n):
             g[j, ] -= err * feature[i, j]
     return g     
 
@@ -53,7 +53,7 @@ def second_derivative(feature):
     '''
     m, n = np.shape(feature)
     G = np.mat(np.zeros((n, n)))
-    for i in xrange(m):
+    for i in range(m):
         x_left = feature[i, ].T
         x_right = feature[i, ]
         G += x_left * x_right
@@ -107,7 +107,7 @@ def newton(feature, label, iterMax, sigma, delta):
         m = get_min_m(feature, label, sigma, delta, d, w, g)  # 得到最小的m
         w = w + pow(sigma, m) * d
         if it % 10 == 0:
-            print "\t---- itration: ", it, " , error: ", get_error(feature, label , w)[0, 0]
+            print ("\t---- itration: ", it, " , error: ", get_error(feature, label , w)[0, 0])
         it += 1       
     return w
 
@@ -118,9 +118,9 @@ def save_model(file_name, w):
     '''
     f_result = open(file_name, "w")
     m, n = np.shape(w)
-    for i in xrange(m):
+    for i in range(m):
         w_tmp = []
-        for j in xrange(n):
+        for j in range(n):
             w_tmp.append(str(w[i, j]))
         f_result.write("\t".join(w_tmp) + "\n")
     f_result.close()
@@ -128,16 +128,16 @@ def save_model(file_name, w):
 
 if __name__ == "__main__":
     # 1、导入数据集
-    print "----------- 1.load data ----------"
+    print ("----------- 1.load data ----------")
     feature, label = load_data("data.txt")
     # 2.1、最小二乘求解
-    print "----------- 2.training ----------"
+    print ("----------- 2.training ----------")
     # print "\t ---------- least_square ----------"
     # w_ls = least_square(feature, label)
     # 2.2、牛顿法
-    print "\t ---------- newton ----------"
+    print ("\t ---------- newton ----------")
     w_newton = newton(feature, label, 50, 0.1, 0.5)
     # 3、保存最终的结果
-    print "----------- 3.save result ----------"
+    print ("----------- 3.save result ----------")
     save_model("weights", w_newton)
     

@@ -17,10 +17,10 @@ def loadData(filePath):
     for line in f.readlines():
         lines = line.strip().split("\t")
 
-        for i in xrange(2):
+        for i in range(2):#  0 , 1
             if lines[i] not in vector_dict:  # 节点已存储
                 # 将节点放入到vector_dict中，设置所属社区为其自身
-                vector_dict[lines[i]] = string.atoi(lines[i])
+                vector_dict[lines[i]] = int(lines[i]) #字符串转换成浮点型
                 # 将边放入到edge_dict
                 edge_list = []
                 if len(lines) == 3:
@@ -48,14 +48,14 @@ def get_max_community_label(vector_dict, adjacency_node_list):
     for node in adjacency_node_list:
         node_id_weight = node.strip().split(":")
         node_id = node_id_weight[0]#邻接节点
-        node_weight = string.atoi(node_id_weight[1])#与邻接节点之间的权重
+        node_weight = int(node_id_weight[1])#与邻接节点之间的权重
         if vector_dict[node_id] not in label_dict:
             label_dict[vector_dict[node_id]] = node_weight
         else:
             label_dict[vector_dict[node_id]] += node_weight
 
     # 找到最大的标签
-    sort_list = sorted(label_dict.items(), key=lambda d: d[1], reverse=True)
+    sort_list = sorted(label_dict.items(), key=lambda d: d[1], reverse=True)  #reverse = True进行降序排列、列表、数据项的方法 
     return sort_list[0][0]
 
 def check(vector_dict, edge_dict):
@@ -86,12 +86,12 @@ def label_propagation(vector_dict, edge_dict):
     while True:
         if (check(vector_dict, edge_dict) == 0):
             t = t + 1
-            print "iteration: ", t
+            print ("iteration: ", t)
             # 对每一个node进行更新
             for node in vector_dict.keys():
                 adjacency_node_list = edge_dict[node] # 获取节点node的邻接节点
                 vector_dict[node] = get_max_community_label(vector_dict, adjacency_node_list)
-            print vector_dict
+            print (vector_dict)
         else:
             break
     return vector_dict
@@ -105,13 +105,29 @@ def save_result(file_name, vec_new):
 
 if __name__ == "__main__":
     # 1、导入数据
-    print "----------1.load data ------------"
+    print ("----------1.load data ------------")
     vector_dict, edge_dict = loadData("cd_data.txt")
-    print "original community: \n", vector_dict
+    print ("original community: \n", vector_dict)
     # 2、利用label propagation算法进行社区划分
-    print "----------2.label propagation ------------"
+    print ("----------2.label propagation ------------")
     vec_new = label_propagation(vector_dict, edge_dict)
     # 3、保存最终的社区划分的结果
-    print "----------3.save result ------------"
+    print ("----------3.save result ------------")
     save_result("result1", vec_new)
-    print "final_result:", vec_new
+    print ("final_result:", vec_new)
+    
+    
+'''
+    ----------1.load data ------------
+original community: 
+ {'0': 0, '2': 2, '3': 3, '4': 4, '5': 5, '1': 1, '7': 7, '6': 6, '10': 10, '11': 11, '8': 8, '9': 9, '14': 14, '15': 15, '12': 12, '13': 13}
+----------2.label propagation ------------
+iteration:  1
+{'0': 2, '2': 2, '3': 2, '4': 2, '5': 2, '1': 2, '7': 2, '6': 2, '10': 2, '11': 2, '8': 2, '9': 2, '14': 2, '15': 2, '12': 2, '13': 2}
+----------3.save result ------------
+final_result: {'0': 2, '2': 2, '3': 2, '4': 2, '5': 2, '1': 2, '7': 2, '6': 2, '10': 2, '11': 2, '8': 2, '9': 2, '14': 2, '15': 2, '12': 2, '13': 2}
+
+'''
+    
+    
+    

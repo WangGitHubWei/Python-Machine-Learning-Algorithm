@@ -83,7 +83,7 @@ def build_tree(data):
     # 2、找到最好的划分
     for fea in range(0, feature_num):
         # 2.1、取得fea特征处所有可能的取值 
-        feature_values = {}  # 在fea位置处可能的取值
+        feature_values = {}  # 在fea位置处可能的取值 
         for sample in data:  # 对每一个样本
             feature_values[sample[fea]] = 1  # 存储特征fea处所有可能的取值
         

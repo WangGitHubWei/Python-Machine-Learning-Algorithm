@@ -19,7 +19,7 @@ def load_data(file_path):
         feature_tmp = []
         lines = line.strip().split("\t")
         feature_tmp.append(1)  # x0
-        for i in xrange(len(lines) - 1):
+        for i in range(len(lines) - 1):
             feature_tmp.append(float(lines[i]))
         feature.append(feature_tmp)
         label.append(float(lines[-1]))
@@ -83,7 +83,7 @@ def bfgs(feature, label, lam, maxCycle):
     Bk = np.eye(n)  
     k = 1  
     while (k < maxCycle):
-        print "\titer: ", k, "\terror: ", get_error(feature, label, w0) 
+        print ("\titer: ", k, "\terror: ", get_error(feature, label, w0))
         gk = get_gradient(feature, label, w0, lam)  # 计算梯度  
         dk = np.mat(-np.linalg.solve(Bk, gk))  
         m = 0  
@@ -129,11 +129,11 @@ def lbfgs(feature, label, lam, maxCycle, m=10):
     
     k = 1
     gk = get_gradient(feature, label, w0, lam)  # 3X1
-    print gk
+    print (gk)
     dk = -H0 * gk
     # 2、迭代
     while (k < maxCycle):
-        print "iter: ", k, "\terror: ", get_error(feature, label, w0) 
+        print ("iter: ", k, "\terror: ", get_error(feature, label, w0)) 
         m = 0
         mk = 0
         gk = get_gradient(feature, label, w0, lam)
@@ -151,7 +151,7 @@ def lbfgs(feature, label, lam, maxCycle, m=10):
         
         # 保留m个
         if k > m:
-            s.pop(0)
+            s.pop(0)#remove and return item at index (default last).
             y.pop(0)
         
         # 保留最新的
@@ -162,21 +162,21 @@ def lbfgs(feature, label, lam, maxCycle, m=10):
         s.append(sk)
         y.append(yk)
         
-        # two-loop
+        # two-loop 
         t = len(s)
         a = []
-        for i in xrange(t):
+        for i in range(t):
             alpha = (s[t - i - 1].T * qk) / (y[t - i - 1].T * s[t - i - 1])
             qk = qk - alpha[0, 0] * y[t - i - 1]
             a.append(alpha[0, 0])
         r = H0 * qk
         
-        for i in xrange(t):
+        for i in range(t):
             beta = (y[i].T * r) / (y[i].T * s[i])
             r = r + s[i] * (a[t - i - 1] - beta[0, 0])
             
         if yk.T * sk > 0:
-            print "update OK!!!!"
+            print ("update OK!!!!")
             dk = -r
         
         k = k + 1
@@ -190,9 +190,9 @@ def save_weights(file_name, w0):
     '''
     f_result = open("weights", "w")
     m, n = np.shape(w0)
-    for i in xrange(m):
+    for i in range(m):
         w_tmp = []
-        for j in xrange(n):
+        for j in range(n):
             w_tmp.append(str(w0[i, j]))
         f_result.write("\t".join(w_tmp) + "\n")
     f_result.close()
@@ -200,10 +200,10 @@ def save_weights(file_name, w0):
 
 if __name__ == "__main__":
     # 1、导入数据
-    print "----------1.load data ------------"
+    print ("----------1.load data ------------")
     feature, label = load_data("data.txt")
     # 2、训练模型
-    print "----------2.training ridge_regression ------------"
+    print ("----------2.training ridge_regression ------------")
     method = "lbfgs"  # 选择的方法
     if method == "bfgs":  # 选择BFGS训练模型
         w0 = bfgs(feature, label, 0.5, 1000)
@@ -212,5 +212,5 @@ if __name__ == "__main__":
     else:  # 使用最小二乘的方法
         w0 = ridge_regression(feature, label, 0.5)
     # 3、保存最终的模型
-    print "----------3.save model ------------"
+    print ("----------3.save model ------------")
     save_weights("weights", w0)

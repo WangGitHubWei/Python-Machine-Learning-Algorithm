@@ -13,8 +13,8 @@ def lwlr(feature, label, k):
     m = np.shape(feature)[0]
     predict = np.zeros(m)
     weights = np.mat(np.eye(m))
-    for i in xrange(m):
-        for j in xrange(m):
+    for i in range(m):
+        for j in range(m):
             diff = feature[i, ] - feature[j, ]
             weights[j,j] = np.exp(diff * diff.T / (-2.0 * k ** 2))
         xTx = feature.T * (weights * feature)
@@ -27,5 +27,5 @@ if __name__ == "__main__":
     feature, label = load_data("data.txt")
     predict = lwlr(feature, label, 0.002)
     m = np.shape(predict)[0]
-    for i in xrange(m):
+    for i in range(m):
         print feature[i, 1], predict[i]

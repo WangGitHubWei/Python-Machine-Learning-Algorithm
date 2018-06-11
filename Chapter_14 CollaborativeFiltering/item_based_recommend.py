@@ -19,7 +19,7 @@ def item_based_recommend(data, w, user):
     
     # 1、找到用户user没有互动的商品
     not_inter = []
-    for i in xrange(n):
+    for i in range(n):
         if interaction[0, i] == 0: # 用户user未打分项
             not_inter.append(i)
             
@@ -27,7 +27,7 @@ def item_based_recommend(data, w, user):
     predict = {}
     for x in not_inter:
         item = np.copy(interaction) # 获取用户user对商品的互动信息
-        for j in xrange(m): # 对每一个商品
+        for j in range(m): # 对每一个商品
             if item[0, j] != 0: # 利用互动过的商品预测
                 if x not in predict:
                     predict[x] = w[x, j] * item[0, j]
@@ -47,23 +47,23 @@ def top_k(predict, k):
     if k >= len_result:
         top_recom = predict
     else:
-        for i in xrange(k):
+        for i in range(k):
             top_recom.append(predict[i])
     return top_recom
 
 if __name__ == "__main__":
     # 1、导入用户商品数据
-    print "------------ 1. load data ------------"
+    print ("------------ 1. load data ------------")
     data = load_data("data.txt")
     # 将用户商品矩阵转置成商品用户矩阵
     data = data.T
     # 2、计算商品之间的相似性
-    print "------------ 2. calculate similarity between items -------------"    
+    print ("------------ 2. calculate similarity between items -------------")    
     w = similarity(data)
     # 3、利用用户之间的相似性进行预测评分
-    print "------------ 3. predict ------------"    
+    print ("------------ 3. predict ------------" )  
     predict = item_based_recommend(data, w, 0)
     # 4、进行Top-K推荐
-    print "------------ 4. top_k recommendation ------------"
+    print ("------------ 4. top_k recommendation ------------")
     top_recom = top_k(predict, 2)
     print top_recom

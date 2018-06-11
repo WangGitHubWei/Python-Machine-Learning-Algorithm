@@ -43,7 +43,7 @@ def load_model(result_file, feature_file):
     f_fea.close()
     
     # 2、导入随机森林模型
-    with open(result_file, 'r') as f:
+    with open(result_file, 'rb') as f:
         trees_result = pickle.load(f)
     
     return trees_result, trees_fiture
@@ -58,9 +58,9 @@ def save_result(data_test, prediction, result_file):
     n = len(data_test[0])
     
     f_result = open(result_file, "w")
-    for i in xrange(m):
+    for i in range(m):
         tmp = []
-        for j in xrange(n -1):
+        for j in range(n -1):
             tmp.append(str(data_test[i][j]))
         tmp.append(str(prediction[i]))
         f_result.writelines("\t".join(tmp) + "\n")

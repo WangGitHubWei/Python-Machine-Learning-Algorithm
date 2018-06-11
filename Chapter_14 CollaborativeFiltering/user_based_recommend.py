@@ -46,8 +46,8 @@ def similarity(data):
     # 初始化相似度矩阵
     w = np.mat(np.zeros((m, m)))
     
-    for i in xrange(m):
-        for j in xrange(i, m):
+    for i in range(m):
+        for j in range(i, m):
             if j != i:
                 # 计算任意两行之间的相似度
                 w[i, j] = cos_sim(data[i, ], data[j, ])
@@ -68,7 +68,7 @@ def user_based_recommend(data, w, user):
     
     # 1、找到用户user没有互动过的商品
     not_inter = []
-    for i in xrange(n):
+    for i in range(n):
         if interaction[0, i] == 0:  # 没有互动的商品
             not_inter.append(i)
     
@@ -76,7 +76,7 @@ def user_based_recommend(data, w, user):
     predict = {}
     for x in not_inter:
         item = np.copy(data[:, x])  # 找到所有用户对商品x的互动信息
-        for i in xrange(m):  # 对每一个用户
+        for i in range(m):  # 对每一个用户
             if item[i, 0] != 0:  # 若该用户对商品x有过互动
                 if x not in predict:
                     predict[x] = w[user, i] * item[i, 0]
@@ -96,21 +96,21 @@ def top_k(predict, k):
     if k >= len_result:
         top_recom = predict
     else:
-        for i in xrange(k):
+        for i in range(k):
             top_recom.append(predict[i])
     return top_recom   
           
 if __name__ == "__main__":
     # 1、导入用户商品数据
-    print "------------ 1. load data ------------"
+    print ("------------ 1. load data ------------")
     data = load_data("data.txt")
     # 2、计算用户之间的相似性
-    print "------------ 2. calculate similarity between users -------------"    
+    print ("------------ 2. calculate similarity between users -------------")    
     w = similarity(data)
     # 3、利用用户之间的相似性进行推荐
-    print "------------ 3. predict ------------"    
+    print ("------------ 3. predict ------------")
     predict = user_based_recommend(data, w, 0)
     # 4、进行Top-K推荐
-    print "------------ 4. top_k recommendation ------------"
+    print ("------------ 4. top_k recommendation ------------")
     top_recom = top_k(predict, 2)
     print top_recom
